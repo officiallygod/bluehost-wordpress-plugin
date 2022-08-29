@@ -44,6 +44,7 @@ describe('Exit to WordPress', function () {
     it('Exit to WordPress Page', () => {
         cy.get('.nfd-onboarding-etw__trigger').click();
         cy.get('.nfd-onboarding-etw__buttons > .is-primary').click();
+        cy.wait(5000);
         cy.url().should('contain', '/home/store/general');
     });
 
