@@ -5,7 +5,7 @@ describe('Get Started Site Type Secondary', function () {
     before(() => {
         cy.setCustomerData();
         cy.visit('wp-admin/?page=nfd-onboarding&flow=ecommerce#/wp-setup/step/get-started/site-secondary');
-        cy.injectAxe(); 
+        // cy.injectAxe(); 
         cy.wait(5000);
     });
 
