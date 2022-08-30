@@ -13,7 +13,7 @@ describe('Exit to WordPress', function () {
 	// });
 
     it("Go to the Page where the Drawer contains Exit to WordPress Button", () => {
-        var drawer_status = cy.get('.nfd-onboarding-drawer__panel-site-title-container').scrollIntoView().should('not.be.visible');
+        var drawer_status = cy.get('.nfd-onboarding-drawer__panel-scroll-container').scrollIntoView().should('not.be.visible');
         var noExitToWPLabel = cy.get('.nfd-onboarding-etw__trigger').should('not.exist');
         if(drawer_status || noExitToWPLabel) {
             cy.get('.navigation-buttons_next').click();
