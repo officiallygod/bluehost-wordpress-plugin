@@ -31,24 +31,31 @@ describe('Start Setup WP Experience Page', function () {
         .and('have.length', 3);
     });
 
-    it('Enable Continue Button based on the radio button selected', () => {
-        // Continue Setup Button disabled when no radio button is clicked
-        cy.get('.nfd-card-button').should('be.disabled');
-        cy.url().should('contain', 'get-started/experience');
-
-        // Radio button clicked and highlighted, enabling the Continue Setup Button
-        cy.get('[type="radio"]').check('1', { force: true });
-        cy.get('[type=radio]:checked').should('have.css', 'background-color', 'rgb(53, 117, 211)');
-        cy.get('.nfd-card-button').should('not.be.disabled').click();
-        cy.url().should('not.contain', 'get-started/experience');
-        cy.go('back');
-    });
-
-    it('Checks if all the radio control buttons are enabled', () => {
+    it('Checks if all the Radio Buttons are Enabled', () => {
         cy.get('.components-radio-control__option')
         .each(($radioControl) => {
             cy.wrap($radioControl).find('input').should('not.be.disabled');
         });
+    });
+
+    it('Check if Continue Setup Button is Disabled when none of the options are checked', () => {
+        cy.get('.nfd-card-button').should('be.disabled');
+        cy.url().should('contain', 'get-started/experience');
+    });
+
+    it('Verifies if the Clicked Radio Button is highlighted.', () => {
+        cy.get('.components-radio-control__option')
+        .each(($radioControl) => {
+            cy.wrap($radioControl).find('label').click();
+            cy.wrap($radioControl).find('input').should('be.checked');
+        });
+    });
+
+    it('Checks if Continue Setup Button is Enabled after the Radio Button is Checked.', () => {
+        cy.get('[type=radio]:checked').should('have.css', 'background-color', 'rgb(53, 117, 211)');
+        cy.get('.nfd-card-button').should('not.be.disabled').click();
+        cy.url().should('not.contain', 'get-started/experience');
+        cy.go('back');
     });
 
     it('Navigation Buttons Landing on expected pages', () => {
