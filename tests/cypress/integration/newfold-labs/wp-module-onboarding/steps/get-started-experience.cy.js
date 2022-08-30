@@ -24,17 +24,19 @@ describe('Start Setup WP Experience Page', function () {
         cy.get('.nfd-step-card-question').should('exist').and('be.visible');
     });
 
-    it('Check if radio options load', () => {
+    it('Check if Radio Options load', () => {
         cy.get('.components-radio-control__option')
         .should('exist')
         .and('be.visible')
         .and('have.length', 3);
     });
 
-    it('Enable Button based on the radio button selected', () => {
+    it('Enable Continue Button based on the radio button selected', () => {
+        // Continue Setup Button disabled when no radio button is clicked
         cy.get('.nfd-card-button').should('be.disabled');
         cy.url().should('contain', 'get-started/experience');
 
+        // Radio button clicked and highlighted, enabling the Continue Setup Button
         cy.get('[type="radio"]').check('1', { force: true });
         cy.get('[type=radio]:checked').should('have.css', 'background-color', 'rgb(53, 117, 211)');
         cy.get('.nfd-card-button').should('not.be.disabled').click();
