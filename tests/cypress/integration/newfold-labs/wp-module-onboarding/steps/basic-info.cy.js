@@ -5,10 +5,23 @@ describe('Basic Info Page', function () {
     before(() => {
         cy.setCustomerData();
         cy.visit('wp-admin/?page=nfd-onboarding&flow=ecommerce#/wp-setup/step/basic-info');
+        // cy.injectAxe();
     });
+
+    // it('Is Accessible', () => {
+	// 	cy.wait(500);
+	// 	cy.checkA11y();
+	// });
 
     it('Check if Drawer opened', () => {
         cy.get('.nfd-onboarding-drawer__panel-site-title-container').scrollIntoView().should('be.visible');
+    });
+	
+    it('Checks if Basic Info is the current Active Selection in the Drawer', () => {
+        cy.get(':nth-child(3) > .nfd-onboarding-drawer__panel-menu-link')
+            .should('have.class', 'active')
+            .and('have.attr', 'href')
+            .and('include', '#/wp-setup/step/basic-info')
     });
 
     it('Close the Drawer and check if closed', () => {
@@ -22,7 +35,7 @@ describe('Basic Info Page', function () {
     });
 
     it('Enter a Title and then Check if it reflects elsewhere', () => {
-        const title = 'Heya BlueHost';
+        const title = 'Hello WordPress';
         var titleBox = cy.get(':nth-child(1) > label > .nfd-input__field');
         if(titleBox.should('exist')){
             titleBox.scrollIntoView();
@@ -38,7 +51,7 @@ describe('Basic Info Page', function () {
     });
 
     it('Enter a Desc and then Check if it reflects elsewhere', () => {
-        const desc = 'Hey there I am BlueHost';
+        const desc = 'Welcome to WordPress';
         var descBox = cy.get(':nth-child(2) > label > .nfd-input__field');
         if ( descBox.should('exist') ) {
             descBox.scrollIntoView();
