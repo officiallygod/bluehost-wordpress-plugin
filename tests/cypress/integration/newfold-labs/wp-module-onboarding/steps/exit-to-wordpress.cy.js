@@ -13,9 +13,9 @@ describe('Exit to WordPress', function () {
 	// });
 
     it("Go to the Page where the Drawer contains Exit to WordPress Button", () => {
-        var drawer_status = cy.get('.nfd-onboarding-drawer__panel-scroll-container').scrollIntoView().should('not.be.visible');
-        var noExitToWPLabel = cy.get('.nfd-onboarding-etw__trigger').should('not.exist');
-        if(drawer_status || noExitToWPLabel) {
+        var noExitToWPLabel = cy.get('.nfd-onboarding-etw__trigger').should('not.exist') || 
+                              !(cy.get('.nfd-onboarding-drawer__toggle-button').click().and('not.have.class','is-suppressed'));
+        if(noExitToWPLabel) {
             cy.get('.navigation-buttons_next').click();
         }
         cy.url().should('not.contain', '/ecommerce/step/products');
