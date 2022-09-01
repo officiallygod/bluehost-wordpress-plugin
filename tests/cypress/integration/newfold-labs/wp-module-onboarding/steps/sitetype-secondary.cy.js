@@ -6,7 +6,7 @@ describe('Get Started Site Type Secondary', function () {
         cy.setCustomerData();
         cy.visit('wp-admin/?page=nfd-onboarding&flow=ecommerce#/wp-setup/step/get-started/site-secondary');
         // cy.injectAxe(); 
-        cy.wait(5000);
+        cy.wait(3000);
     });
 
     // it('Is Accessible', () => {
@@ -46,10 +46,11 @@ describe('Get Started Site Type Secondary', function () {
 
     it('Check different subCategories exist and is selectable', () => {
         cy.get('.subCategoriesSection').should('be.visible');
-        cy.get('.subCategoriesSection span').first().click();
-        cy.get('.subCategoriesSection')
-            .children()
-            .should('have.class','chosenSecondaryCategory');
+        cy.get('.subCategoriesSection span').each( ($option) => {
+            cy.wrap($option)
+                .click()
+                .should('have.class','chosenSecondaryCategory');
+        });
     });
 
     it('Check if input box exists and is editable', () => {
