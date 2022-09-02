@@ -4,8 +4,8 @@ describe('Exit to WordPress', function () {
     before(() => {
         cy.setCustomerData();
         cy.visit(
-            'wp-admin/?page=nfd-onboarding&flow=ecommerce#/ecommerce/step/products'
-        ).wait(2000);
+            'wp-admin/?page=nfd-onboarding&flow=ecommerce#/ecommerce/step/products', {timeout: 8000}
+        );
         // cy.injectAxe();
     });
 
@@ -49,7 +49,7 @@ describe('Exit to WordPress', function () {
     it('Exit to WordPress Page', () => {
         cy.get('.nfd-onboarding-etw__trigger').click();
         cy.get('.nfd-onboarding-etw__buttons > .is-primary').click();
-        cy.url({ timeout: 8000 }).should('contain', '#/home/store/general');
+        cy.url({ timeout: 6000 }).should('contain', '#/home/store/general');
     });
 
     after(() => {
