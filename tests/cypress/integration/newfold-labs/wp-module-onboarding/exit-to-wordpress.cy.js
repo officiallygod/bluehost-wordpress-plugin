@@ -1,21 +1,26 @@
 // <reference types="Cypress" />
 
 describe('Exit to WordPress', function () {
-
     before(() => {
         cy.setCustomerData();
-        cy.visit('wp-admin/?page=nfd-onboarding&flow=ecommerce#/ecommerce/step/products').wait(2000);
-		// cy.injectAxe();
+        cy.visit(
+            'wp-admin/?page=nfd-onboarding&flow=ecommerce#/ecommerce/step/products'
+        ).wait(2000);
+        // cy.injectAxe();
     });
 
     // it('Is Accessible', () => {
-	// 	cy.checkA11y();
-	// });
+    // 	cy.checkA11y();
+    // });
 
-    it("Go to the Page where the Drawer contains Exit to WordPress Button", () => {
-        var noExitToWPLabel = cy.get('.nfd-onboarding-etw__trigger').should('not.exist') || 
-                              !(cy.get('.nfd-onboarding-drawer__toggle-button').click().and('not.have.class','is-suppressed'));
-        if(noExitToWPLabel) {
+    it('Go to the Page where the Drawer contains Exit to WordPress Button', () => {
+        var noExitToWPLabel =
+            cy.get('.nfd-onboarding-etw__trigger').should('not.exist') ||
+            !cy
+                .get('.nfd-onboarding-drawer__toggle-button')
+                .click()
+                .and('not.have.class', 'is-suppressed');
+        if (noExitToWPLabel) {
             cy.get('.navigation-buttons_next').click();
         }
         cy.url().should('not.contain', '/ecommerce/step/products');
@@ -38,14 +43,13 @@ describe('Exit to WordPress', function () {
             cy.get('.nfd-onboarding-etw__trigger').click();
             cy.get('.nfd-onboarding-etw__buttons > .is-secondary').click();
             cy.url().should('equal', currUrl);
-        })
+        });
     });
 
     it('Exit to WordPress Page', () => {
         cy.get('.nfd-onboarding-etw__trigger').click();
         cy.get('.nfd-onboarding-etw__buttons > .is-primary').click();
-        cy.wait(5000);
-        cy.url().should('contain', '/home/store/general');
+        cy.url({ timeout: 8000 }).should('contain', '#/home/store/general');
     });
 
     after(() => {
