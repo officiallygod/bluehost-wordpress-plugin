@@ -1,19 +1,18 @@
 // <reference types="Cypress" />
+const marketplace = require('../fixtures/products.json');
 
-describe('Marketplace Page', () => {
+describe('Marketplace Page', function () {
 
 	before(() => {
-		// cy.login(Cypress.env('wpUsername'), Cypress.env('wpPassword'));
-		// cy.server();
+		cy.server();
 		cy.intercept({
 			method: 'GET',
 			url: '**newfold-marketplace**'
 		}, {
 			fixture: 'products.json'
-		}).as('products');
-
+		}).as('marketplace');
 		cy.visit('/wp-admin/admin.php?page=bluehost#/marketplace');
-		cy.wait('@products');
+		cy.injectAxe();
 	});
 
 	it('Exists', () => {
@@ -21,28 +20,27 @@ describe('Marketplace Page', () => {
 	});
 
 	it('Is Accessible', () => {
-		cy.injectAxe();
 		cy.wait(1000);
 		cy.checkA11y('.bwa-route-contents');
 	});
 
-	it('Product grid has 6 items', () => {
-		cy.get('.marketplace-item').should('have.length', 6);
+	it('Product grid has 2 items', () => {
+		cy.get('.marketplace-item').should('have.length', 2);
 	});
 
 	it('First product card renders correctly', () => {
-		cy.get('#marketplace-item-7beee5ae-2e91-4282-9930-15ada43fc738').as('card');
+		cy.get('#marketplace-item-81288755-c7cf-4408-bc2f-8ac67020ba01').as('card');
 
 		cy.get('@card')
-			.findByRole('link', {name: 'Buy Now'})
+			.findByRole('link', {name: 'Add to my Account'})
 			.scrollIntoView()
 			.should('be.visible')
 			.should('have.attr', 'href')
-			.and('include', 'marketplace/product/i/yoast');
+			.and('include', 'marketplace/product/i/bluesky');
 
 		cy.get('@card').first().within(() => {
 			cy.get('.components-card__header')
-				.contains('Yoast')
+				.contains('Blue')
 				.should('be.visible');
 			cy.get('.components-card__media').should('be.visible');
 			cy.get('.components-card__header .price')
@@ -52,22 +50,22 @@ describe('Marketplace Page', () => {
 	});
 
 	it('Second product card render correctly', () => {
-		cy.get('#marketplace-item-8a7f19b7-21f2-4be2-a764-33b4d4760bb9').as('card');
+		cy.get('#marketplace-item-7beee5ae-2e91-4282-9930-15ada43fc738').as('card');
 
 		cy.get('@card')
 			.findByRole('link', {name: 'Buy Now'})
 			.scrollIntoView()
 			.should('be.visible')
 			.should('have.attr', 'href')
-			.and('include', 'marketplace/product/i/jetpack');
+			.and('include', 'yoa.st');
 
 		cy.get('@card').first().within(() => {
 			cy.get('.components-card__header')
-				.contains('Jetpack')
+				.contains('Yoast')
 				.should('be.visible');
 			cy.get('.components-card__media').should('be.visible');
 			cy.get('.components-card__header .price')
-				.contains('$4.99')
+				.contains('$99.00')
 				.should('be.visible');
 		});
 	});
@@ -96,22 +94,16 @@ describe('Marketplace Page', () => {
 	});
 
 	it('Category Tab Filters properly', () => {
-		cy.get('button[role="tab"][id$="services"]')
-			.should('have.class', 'newfold-marketplace-tab-services')
-			.should('exist')
-			.click();
-		cy.get('.marketplace-item').should('have.length', 11);
+		cy.findByRole('tab', {name: 'Services'}).click();
+		cy.get('.marketplace-item').should('have.length', 6);
 
 		cy.get('#marketplace-item-0fd107dc-cfcc-4380-86ef-89a9ce01e443 h2')
 			.scrollIntoView()
 			.should('be.visible')
 			.should('have.text', 'Full Service');
 
-		cy.get('button[role="tab"][id$="seo"]')
-			.should('have.class', 'newfold-marketplace-tab-seo')
-			.should('exist')
-			.click();
-		cy.get('.marketplace-item').should('have.length', 5);
+		cy.findByRole('tab', {name: 'SEO'}).click();
+		cy.get('.marketplace-item').should('have.length', 1);
 
 		cy.get('#marketplace-item-7beee5ae-2e91-4282-9930-15ada43fc738 h2')
 			.scrollIntoView()
@@ -120,11 +112,7 @@ describe('Marketplace Page', () => {
 	});
 
 	it('Category tabs update path', () => {
-		cy.get('button[role="tab"][id$="services"]')
-			.should('have.class', 'newfold-marketplace-tab-services')
-			.should('exist')
-			.click();
-		
+		cy.findByRole('tab', {name: 'Services'}).click();
 		cy.location().should((loc) => {
 			expect(loc.hash).to.eq('#/marketplace/services')
 		});

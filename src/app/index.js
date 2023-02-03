@@ -17,13 +17,7 @@ import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import { dispatch } from '@wordpress/data';
 import {kebabCase} from 'lodash';
-import { useEffect, useState } from '@wordpress/element';
-
-// component sourced from module
-import { default as NewfoldNotifications } from '../../vendor/newfold-labs/wp-module-notifications/assets/js/components/notifications/'; 
-// to pass to notifications module
-import apiFetch from '@wordpress/api-fetch';
-import { filter } from 'lodash';
+import { useState } from '@wordpress/element';
 
 const AppBody = ( props ) => {
 	const [isAppBooted, setAppBooted] = useState(false);
@@ -36,7 +30,6 @@ const AppBody = ( props ) => {
 
 	let location = useLocation();
 	let kebabRoute = kebabCase( location.pathname );
-	const hashedPath = '#' + location.pathname;
 	
 	const handleNavFocus = ( event ) => {
 		userTrigger(event, () => { 
@@ -90,20 +83,6 @@ const AppBody = ( props ) => {
 				{ __( 'Skip to Content', 'bluehost-wordpress-plugin' ) }
 			</SkipLink>
 			<BWACommonHeader />
-			<NewfoldNotifications
-				constants={{
-					context: 'bluehost-plugin',
-					page: hashedPath,
-					resturl: window.nfdRestRoot
-				}}
-				methods={{
-					apiFetch,
-					classnames,
-					filter,
-					useState,
-					useEffect
-				}}
-			/>
 			<BWARouteContents />
 			<BWACommonFooter />
 		</main>

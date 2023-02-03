@@ -14,14 +14,6 @@ add_action(
 			BLUEHOST_PLUGIN_VERSION,
 			true
 		);
-		wp_localize_script(
-			'bh-ctb',
-			'bhctb',
-			array(
-				'restApiUrl'   => esc_url_raw( get_home_url() . '/index.php?rest_route=/' ),
-				'restApiNonce' => wp_create_nonce( 'wp_rest' ),
-			)
-		);
 	}
 );
 

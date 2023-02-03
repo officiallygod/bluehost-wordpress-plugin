@@ -1,33 +1,32 @@
 // <reference types="Cypress" />
 
-describe('Dashboard Widget', () => {
+describe('Dashboard Widget', function () {
 
 	before(() => {
 		cy.visit('/wp-admin/index.php');
 		cy.injectAxe();
 	});
 
-	it.skip('Exists', () => {
+	it('Exists', () => {
 		cy
 			.get('#bluehost-widget-container')
 			.scrollIntoView()
 			.should('be.visible');
 	});
 
-	it.skip('Is Accessible', () => {
+	it('Is Accessible', () => {
 		cy.wait(1500);
 		cy.checkA11y('#bluehost-widget-container .inside');
 	});
 
-    it.skip('Has Widget Title', () => {
+    it('Has Widget Title', () => {
 		cy.get('#bluehost-widget-container .inside h3')
             .scrollIntoView()
             .should('be.visible')
             .should('have.text', 'Latest from the Bluehost Blog');
 	});
 
-    // TODO: fix the endpoint here and then turn the test back on
-    it.skip('Has Bluehost Blog Posts', () => {
+    it('Has Bluehost Blog Posts', () => {
         // show six line items
         cy.get('#bluehost-widget-container .blog-posts ul > li')
             .should('have.length', 6)
@@ -46,7 +45,7 @@ describe('Dashboard Widget', () => {
         })   
     });
 
-    it.skip('Has Footer Links', () => {
+    it('Has Footer Links', () => {
         // check each footer link isn't undefined
         cy.get('#bluehost-widget-container .footer a').should('be.visible').each(($a, i) => {
             const message = $a.text();

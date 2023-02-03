@@ -2,7 +2,7 @@ import { BWAAccountCard, BWAHelpCard } from "@app/components/molecules";
 import { BWACommonTemplate } from "@app/components/templates";
 import { Modal } from "@wordpress/components";
 import { useDispatch, useSelect } from "@wordpress/data";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import "@newfold-labs/wp-module-ecommerce/bluehost.css";
 import "@newfold-labs/wp-module-ecommerce/styles.scss";
@@ -12,7 +12,6 @@ import "./styles.scss";
 const NewfoldECommerce = window.NewfoldECommerce;
 
 function EcommercePage() {
-  const navigate = useNavigate();
   let brandPluginState = useSelect((select) => {
     let store = select("bluehost/plugin");
     return {
@@ -27,7 +26,6 @@ function EcommercePage() {
   };
   const wpModules = {
     Modal,
-    navigate
   };
   return (
     <BWACommonTemplate>
@@ -35,7 +33,7 @@ function EcommercePage() {
         state={eCommerceState}
         actions={eCommerceActions}
         wpModules={wpModules}
-        section={section}
+        section={section ?? "general"}
       />
       <div className="grid-col-2">
         <BWAAccountCard />
