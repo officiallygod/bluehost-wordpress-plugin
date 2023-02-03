@@ -2,7 +2,7 @@
 
 use Bluehost\BuildAssets;
 use Bluehost\Staging;
-use NewfoldLabs\WP\Module\CustomerBluehost\CustomerBluehost;
+use Bluehost\WP\Data\Customer;
 
 /**
  * Bluehost_Admin_App_Assets class
@@ -73,7 +73,7 @@ class Bluehost_Admin_App_Assets {
 	 */
 	protected function prepareAdminData() {
 		$token         = get_option( 'nfd_data_token' );
-		$customerData  = CustomerBluehost::collect();
+		$customerData  = Customer::collect();
 		$hasToken      = ! empty( $token );
 		$hasCustomerId = ! empty( $customerData ) && ! empty( $customerData['customer_id'] );
 		$showCTBs      = $hasToken && $hasCustomerId;
@@ -88,7 +88,7 @@ class Bluehost_Admin_App_Assets {
 	 * Register Page JS - only applies to bluehost pages
 	 */
 	protected function prepareData() {
-		$customerData = CustomerBluehost::collect();
+		$customerData = Customer::collect();
 
 		$data = array(
 			'app'          => array(

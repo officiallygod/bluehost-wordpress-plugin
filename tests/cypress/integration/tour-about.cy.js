@@ -1,7 +1,5 @@
 // <reference types="Cypress" />
 
-const semver = require('semver');
-
 describe('Tour: About Page', function () {
 
 	before(() => {
@@ -70,7 +68,6 @@ describe('Tour: About Page', function () {
 	});
 
 	it('Removes highlight on caret enter', () => {
-
 		cy.get('#nf-2')
 			.should('exist')
 			.contains('topic/product')
@@ -80,18 +77,9 @@ describe('Tour: About Page', function () {
 		cy.get('#nf-1')
 			.type('{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}{rightarrow}');
 		cy.wait(500);
-
-		if (semver.satisfies(Cypress.env('wpSemverVersion'), '>5.8.x')) {
-			cy.get('#nf-2')
-				.should('have.css', 'background-color', 'rgba(0, 0, 0, 0)')
-				.should('have.css', 'color', 'rgb(0, 0, 0)')
-		} else {
-			// WordPress versions 5.8 and earlier use a different text color
-			cy.get('#nf-2')
-				.should('have.css', 'background-color', 'rgba(0, 0, 0, 0)')
-				.should('have.css', 'color', 'rgb(40, 48, 61)')
-		}
-
+		cy.get('#nf-2')
+			.should('have.css', 'background-color', 'rgba(0, 0, 0, 0)')
+			.should('have.css', 'color', 'rgb(0, 0, 0)');
 	});
 
 	it('Finds unedited placeholder text on pre-publish', () => {

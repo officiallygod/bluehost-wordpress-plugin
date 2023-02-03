@@ -1,11 +1,9 @@
 name: Cypress Tests
-
 on:
   push:
     branches:
       - main
       - master
-      - trunk
       - develop
       - release/*
       - feature/*
@@ -13,28 +11,32 @@ on:
       - update/*
       - fix/*
       - try/*
+    paths-ignore:
+      - '.github/**'
+      - '!.github/workflows/cypress.yml'
+      - '.gitignore'
+      - '**.md'
   pull_request:
-    types: [opened, edited, reopened, ready_for_review]
-  workflow_dispatch:
-
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+  pull_request_review:
+    types: [submitted, edited]
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.sha }}
   cancel-in-progress: true
-
 jobs:
   test:
     name: Run Cypress Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    if: ${{ github.repository == 'bluehost/bluehost-wordpress-plugin' }}
     steps:
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: '7.4'
           coverage: none
           tools: composer, cs2pr
 
@@ -45,26 +47,37 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           mkdir dist
-          echo "DIST=${PWD}/dist" >> $GITHUB_OUTPUT
-          echo "PACKAGE=${REPO##*/}" >> $GITHUB_OUTPUT
+          echo ::set-output name=DIST::${PWD}/dist
+          echo ::set-output name=PACKAGE::${REPO##*/}
 
       - name: Use Node.js 16.x
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v1
         with:
           node-version: 16.x
-          cache: 'npm'
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
       - name: Get Composer cache directory
         id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
       - name: Cache Composer vendor directory
-        uses: actions/cache@v3
+        uses: actions/cache@v2
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
-            ${{ runner.os }}-composer-
+            ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
 
       - name: Show versions
         run: |
@@ -93,37 +106,32 @@ jobs:
         run: find .
 
       - name: Configure WordPress
-        run: echo '{"plugins":["${{ steps.workflow.outputs.DIST }}/${{ steps.workflow.outputs.PACKAGE }}"]}' > .wp-env.override.json
+        run: echo '{"config":{"WP_DEBUG_DISPLAY":false},"plugins":["${{ steps.workflow.outputs.DIST }}/${{ steps.workflow.outputs.PACKAGE }}"]}' > .wp-env.override.json
 
       - name: Install WordPress
         run: npx wp-env start --debug
 
       - name: Run Cypress Tests
-        if: ${{ github.repository != 'bluehost/bluehost-wordpress-plugin' }}
-        run: npx cypress run
-
-      - name: Run Cypress Tests
-        uses: replayio/action-cypress@v0.2.6
-        if: ${{ github.repository == 'bluehost/bluehost-wordpress-plugin' }}
-        with:
-          api-key: ${{ secrets.RECORD_REPLAY_API_KEY }}
-          browser: 'Replay Chromium'
-          command: npm run test:e2e -- --record --key ${{ secrets.CYPRESS_RECORD_KEY }}
-          upload-all: false
-
-      - name: List Replays
-        if: always()
-        shell: bash
-        run: npx @replayio/replay ls --json
+        run: npx cypress run --record --key ${{ secrets.CYPRESS_RECORD_KEY }}
 
       - name: Store screenshots of test failures
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: screenshots
           path: ./tests/cypress/screenshots
 
-      - name: Output debug.log file contents
-        if: ${{ always() }}
-        continue-on-error: true
-        run: npx wp-env run wordpress "cat /var/www/html/wp-content/debug.log"
+      - name: Check if a debug.log file exists
+        id: hasErrors
+        run: npx wp-env run wordpress test ! -f /var/www/html/wp-content/debug.log
+
+      - name: Copy debug.log file
+        if: ${{ steps.hasErrors.outputs.failure }}
+        run: cat /var/www/html/wp-content/debug.log 1>./debug.log 2>/dev/null
+
+      - name: Store debug.log file
+        if: ${{ steps.hasErrors.outputs.failure }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: logs
+          path: ./debug.log
