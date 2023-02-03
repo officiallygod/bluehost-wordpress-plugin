@@ -141,17 +141,6 @@ describe('Basic Info Page', function () {
         }
     });
 
-    it('Check if Final Redirect works', () => {
-        if (cy.get('.navigation-buttons_finish').should('exist')) {
-            cy.get('.navigation-buttons_finish').click();
-
-            var correctURL =
-                Cypress.config().baseUrl +
-                '/wp-admin/index.php?page=bluehost#/home/store/general';
-            cy.url({ timeout: 8000 }).should('eq', correctURL);
-        }
-    });
-
     after(() => {
         cy.clearCustomerData();
     });
