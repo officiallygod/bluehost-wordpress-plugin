@@ -3,9 +3,8 @@
 use Bluehost\AdminBar;
 use Bluehost\BuildAssets;
 use Bluehost\LoginRedirect;
-use Bluehost\Themes;
+use Bluehost\UpgradeHandler;
 use WP_Forge\WPUpdateHandler\PluginUpdater;
-use WP_Forge\UpgradeHandler\UpgradeHandler;
 
 // Composer autoloader
 if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
@@ -34,21 +33,18 @@ $pluginUpdater->setDataMap(
 	)
 );
 
-// Handle any upgrade routines (only in the admin)
+// Handle any upgrade routines
 if ( is_admin() ) {
 
 	// Handle plugin upgrades
 	$upgrade_handler = new UpgradeHandler(
-		BLUEHOST_PLUGIN_DIR . '/inc/upgrades',  // Directory where upgrade routines live
-		get_option( 'bluehost_plugin_version', '1.0' ),   // Old plugin version (from database)
-		BLUEHOST_PLUGIN_VERSION               // New plugin version (from code)
+		BLUEHOST_PLUGIN_DIR . '/inc/upgrades',
+		get_option( 'bluehost_plugin_version', '1.0' ),
+		BLUEHOST_PLUGIN_VERSION
 	);
 
-	// Returns true if the old version doesn't match the new version
 	$did_upgrade = $upgrade_handler->maybe_upgrade();
-
 	if ( $did_upgrade ) {
-		// If an upgrade occurred, update the new version in the database to prevent running the routine(s) again.
 		update_option( 'bluehost_plugin_version', BLUEHOST_PLUGIN_VERSION, true );
 	}
 }
@@ -73,8 +69,10 @@ require __DIR__ . '/inc/admin.php';
 require __DIR__ . '/inc/admin-page-notifications-blocker.php';
 require __DIR__ . '/inc/base.php';
 require __DIR__ . '/inc/cli-init.php';
+require __DIR__ . '/inc/coming-soon.php';
 require __DIR__ . '/inc/jetpack.php';
 require __DIR__ . '/inc/menu.php';
+require __DIR__ . '/inc/Notifications/bootstrap.php';
 require __DIR__ . '/inc/CTB/bootstrap.php';
 require __DIR__ . '/inc/partners.php';
 require __DIR__ . '/inc/performance.php';

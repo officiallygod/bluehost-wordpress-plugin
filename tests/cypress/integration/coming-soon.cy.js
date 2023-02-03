@@ -3,56 +3,28 @@
 describe('Coming Soon Page', function () {
 
 	before(() => {
-		cy.visit('/wp-admin/admin.php?page=bluehost#/settings');
+		cy.exec('npx wp-env run cli wp option set mm_coming_soon true');
+		cy.logout();
+		cy.visit('/');
 		cy.injectAxe();
 	});
 
-	it('Coming Soon Toggle Works', () => {
-		cy.get('.onoffswitch__checkbox[aria-label="Coming Soon Page"]').uncheck();
-		cy.wait(2000);
-		cy.get('.onoffswitch__checkbox[aria-label="Coming Soon Page"]').should('not.be.checked');
-
-		cy.get('.onoffswitch__checkbox[aria-label="Coming Soon Page"]').check();
-		cy.wait(2000);
-		cy.get('.onoffswitch__checkbox[aria-label="Coming Soon Page"]').should('be.checked');
-		
-	});
-
-	it('Has Coming Soon in Admin Toolbar', () => {
-		cy.visit('/wp-admin/admin.php?page=bluehost#/settings');
+	it('Exists', () => {
 		cy
-			.get('#wp-toolbar')
-			.contains('#nfd-site-status-text', 'Coming Soon')
-			.should('be.visible');
-	});
-
-	it('Displays admin coming soon notice', () => {
-		cy.visit('/wp-admin/index.php');
-		cy
-			.get('.notice-warning')
-			.contains('p', 'coming')
-			.should('be.visible');
-	});
-
-	it('Displays Coming Soon on Frontend', () => {
-		cy.get('#wp-admin-bar-logout a').click({ force: true });
-		cy.visit('/');
-		cy
-			.get('body')
-			.contains('h2', 'Coming Soon')
+			.findByRole('heading', {name: 'Coming Soon!', level: 2})
+			.scrollIntoView()
 			.should('be.visible');
 	});
 
 	it('Is Accessible', () => {
-		cy.injectAxe()
 		cy.wait(500);
-		cy.checkA11y('body');
+		cy.checkA11y();
 	});
 
 	it('Has admin login button', () => {
 		cy
-			.get('body')
-			.contains('a', 'Admin Login')
+			.findByRole('link', {name: 'Admin Login'})
+			.scrollIntoView()
 			.should('be.visible')
 			.should('have.attr', 'href')
 			.and('include', '/wp-login.php');
