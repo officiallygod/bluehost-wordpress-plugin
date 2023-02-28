@@ -1,4 +1,5 @@
 // <reference types="Cypress" />
+import { HeadingSubheading } from '../common.cy';
 
 describe('Site Features', function () {
 
@@ -13,8 +14,7 @@ describe('Site Features', function () {
     });
 
     it('Check if Header and Subheader shows up', () => {
-        cy.get('.nfd-main-heading__title').should('be.visible');
-        cy.get('.nfd-main-heading__subtitle').should('be.visible');
+        HeadingSubheading();
     });
 
     it('Check if Drawer toggles', () => {
