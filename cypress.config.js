@@ -50,14 +50,13 @@ module.exports = defineConfig({
 		},
 		baseUrl: 'http://localhost:8882',
 		specPattern: [
-			'tests/cypress/integration/*.cy.{js,jsx,ts,tsx}',
-			'tests/cypress/integration/newfold-labs/**/*.cy.{js,jsx,ts,tsx}',
+			'tests/cypress/integration/**/*.cy.{js,jsx,ts,tsx}',
 		],
 		supportFile: 'tests/cypress/support/index.js',
 		testIsolation: false,
-		excludeSpecPattern: [
-			"tests/cypress/integration/newfold-labs/wp-module-onboarding/wp-module-support/",
-			"tests/cypress/integration/newfold-labs/wp-module-onboarding/"
-		]
+		// excludeSpecPattern: [
+		// 	"tests/cypress/integration/newfold-labs/wp-module-onboarding/wp-module-support/",
+		// 	"tests/cypress/integration/newfold-labs/wp-module-onboarding/"
+		// ]
 	},
 })
