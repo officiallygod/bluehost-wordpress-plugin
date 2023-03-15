@@ -50,7 +50,7 @@ module.exports = defineConfig({
 		},
 		baseUrl: 'http://localhost:8882',
 		specPattern: [
-			'tests/cypress/integration/**/*.cy.{js,jsx,ts,tsx}',
+			'tests/cypress/integration/*.cy.{js,jsx,ts,tsx}',
 			'tests/cypress/integration/newfold-labs/**/*.cy.{js,jsx,ts,tsx}'
 		],
 		supportFile: 'tests/cypress/support/index.js',
