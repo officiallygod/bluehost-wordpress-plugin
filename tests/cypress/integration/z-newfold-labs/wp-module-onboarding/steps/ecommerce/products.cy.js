@@ -8,7 +8,7 @@ import {
 	CheckIntroPanel,
 } from '../../wp-module-support/sidebar.cy';
 
-describe( 'Step Ecommerce Products Info', function () {
+describe( ' Step Ecommerce Products Info', function () {
 	before( () => {
 		cy.visit(
 			'wp-admin/?page=nfd-onboarding&flow=ecommerce#/ecommerce/step/products'
