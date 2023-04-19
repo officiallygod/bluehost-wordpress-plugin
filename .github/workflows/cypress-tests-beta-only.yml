@@ -28,16 +28,6 @@ jobs:
     timeout-minutes: 45
 
     steps:
-
-     - name: Fetch WordPress Beta Version
-          run: |
-            fetch('https://api.wordpress.org/core/version-check/1.7/?channel=beta')
-            .then(response => response.json())
-            .then(data => {
-              const wp_beta_zip = data['offers'][0]['download'];
-              console.log(wp_beta_zip);
-            });
-
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -98,10 +88,29 @@ jobs:
       - name: List Distribution Files
         working-directory: ${{ steps.workflow.outputs.DIST }}
         run: find .
-        
+
+      - name: Fetch WordPress beta version
+        run: |
+          fetch('https://api.wordpress.org/core/version-check/1.7/?channel=beta')
+	          .then(response => response.json())
+	          .then(data => {
+		            const wp_beta_zip = data['offers'][0]['download'];
+              echo "::set-output name=wp_beta_zip::$wp_beta_zip"});
+
+      - name: Download WordPress Core
+        run: |
+          wget -O wordpress-beta.zip "${{ steps.build.outputs.wp_beta_zip }}"
+
       - name: Configure WordPress
         run: |
-          echo '{ "core":"'"${wp_beta_zip}"'","plugins":[ "${{ steps.workflow.outputs.DIST }}/${{ steps.workflow.outputs.PACKAGE }}" ] }' > .wp-env.override.json
+          unzip wordpress-beta.zip
+          mv wordpress/* .
+          rmdir wordpress
+          echo '{ "core":"","plugins":[ "${{ steps.workflow.outputs.DIST }}/${{ steps.workflow.outputs.PACKAGE }}" ] }' > .wp-env.override.json
+        
+      # - name: Configure WordPress
+      #   run: |
+      #     echo '{ "core":"'"${wp_beta_zip}"'","plugins":[ "${{ steps.workflow.outputs.DIST }}/${{ steps.workflow.outputs.PACKAGE }}" ] }' > .wp-env.override.json
         
       - name: Install WordPress
         run: npx wp-env start --debug
