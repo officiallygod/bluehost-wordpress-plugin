@@ -89,28 +89,17 @@ jobs:
         working-directory: ${{ steps.workflow.outputs.DIST }}
         run: find .
 
-      # - name: Fetch WordPress beta version
-      #   run: |
-      #     fetch('https://api.wordpress.org/core/version-check/1.7/?channel=beta')
-	    #       .then(response => response.json())
-	    #       .then(data => {
-		  #           const wp_beta_zip = data['offers'][0]['download'];
-      #         echo "::set-output name=wp_beta_zip::$wp_beta_zip"});
-
-      # - name: Download WordPress Core
-      #   run: |
-      #     wget -O wordpress-beta.zip "${{ steps.build.outputs.wp_beta_zip }}"
-
-      # - name: Configure WordPress
-      #   run: |
-      #     unzip wordpress-beta.zip
-      #     mv wordpress/* .
-      #     rmdir wordpress
-      #     echo '{ "core":"","plugins":[ "${{ steps.workflow.outputs.DIST }}/${{ steps.workflow.outputs.PACKAGE }}" ] }' > .wp-env.override.json
+      - name: Fetch WordPress beta version
+        run: |
+          fetch('https://api.wordpress.org/core/version-check/1.7/?channel=beta')
+            .then(response => response.json())
+            .then(data => {
+            const wp_beta_zip = data['offers'][0]['download'];
+            });
         
       - name: Configure WordPress
         run: |
-          echo '{ "core":"https:\/\/downloads.wordpress.org\/release\/wordpress-6.2.zip","plugins":[ "${{ steps.workflow.outputs.DIST }}/${{ steps.workflow.outputs.PACKAGE }}" ] }' > .wp-env.override.json
+          echo '{ "core" : "'"${wp_beta_zip}"'" , "plugins":[ "${{ steps.workflow.outputs.DIST }}/${{ steps.workflow.outputs.PACKAGE }}" ] }' > .wp-env.override.json
         
       - name: Install WordPress
         run: npx wp-env start --debug
