@@ -27,10 +27,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
-    # strategy:
-    #   fail-fast: false
-    #   WPBetaVersion: 
     steps:
+
+     - name: Fetch WordPress Beta Version
+          run: |
+            fetch('https://api.wordpress.org/core/version-check/1.7/?channel=beta')
+            .then(response => response.json())
+            .then(data => {
+              const wp_beta_zip = data['offers'][0]['download'];
+              console.log(wp_beta_zip);
+            });
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -95,11 +101,7 @@ jobs:
         
       - name: Configure WordPress
         run: |
-          fetch('https://api.wordpress.org/core/version-check/1.7/?channel=beta')
-	          .then(response => response.json())
-	          .then(data => {
-		            const wp_beta_zip = data['offers'][0]['download']});
-          echo '{ "core" : "wp_beta_zip" ,"plugins":[ "${{ steps.workflow.outputs.DIST }}/${{ steps.workflow.outputs.PACKAGE }}" ] }' > .wp-env.override.json
+          echo '{ "core":"'"${wp_beta_zip}"'","plugins":[ "${{ steps.workflow.outputs.DIST }}/${{ steps.workflow.outputs.PACKAGE }}" ] }' > .wp-env.override.json
         
       - name: Install WordPress
         run: npx wp-env start --debug
