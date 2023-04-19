@@ -95,7 +95,11 @@ jobs:
         
       - name: Configure WordPress
         run: |
-          echo '{"core": "https://downloads.wordpress.org/release/wordpress-6.2.zip","plugins": [ "${{ steps.workflow.outputs.DIST }}/${{ steps.workflow.outputs.PACKAGE }}" ] }' > .wp-env.override.json
+          fetch('https://api.wordpress.org/core/version-check/1.7/?channel=beta')
+	          .then(response => response.json())
+	          .then(data => {
+		            const wp_beta_zip = data['offers'][0]['download']});
+          echo '{ "core" : "wp_beta_zip" ,"plugins":[ "${{ steps.workflow.outputs.DIST }}/${{ steps.workflow.outputs.PACKAGE }}" ] }' > .wp-env.override.json
         
       - name: Install WordPress
         run: npx wp-env start --debug
