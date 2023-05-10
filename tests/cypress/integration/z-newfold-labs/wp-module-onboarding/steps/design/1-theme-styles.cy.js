@@ -17,6 +17,14 @@ describe( 'Theme Styles Menu and Preview', function () {
 		cy.wait( 40000 );
 	} );
 
+	it( 'Continue Onboarding', () => {
+		cy.get( '.components-modal__content', { timeout: 40000 } ).should(
+			'be.visible'
+		);
+		cy.contains( 'button', 'Continue' ).click();
+		cy.wait(5000);
+	})
+
 	it( 'Check Drawer Activity', () => {
 		DrawerActivityForMenu(
 			'Onboarding Menu',
