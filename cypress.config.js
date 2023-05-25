@@ -26,6 +26,15 @@ module.exports = defineConfig({
 		'*jnn-pa.googleapis.com',
 		'*youtube.com',
 	],
+	reporter: 'mochawesome',
+	reporterOptions: {
+		reportDir: "tests/cypress/report/mochawesome",
+		overwrite: true,
+		charts: true,
+		html: true,
+		json: false,
+		timestamp: "mmddyyyy_HHMMss"
+	 },
 	e2e: {
 		setupNodeEvents(on, config) {
 			const semver = require('semver');
