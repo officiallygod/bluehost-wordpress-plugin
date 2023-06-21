@@ -10,11 +10,20 @@ import {
 
 describe( 'Theme Styles Menu and Preview', function () {
 	before( () => {
+		cy.exec( 'npx wp-env run cli wp option delete nfd_module_onboarding_theme_settings' );
 		cy.visit(
 			'wp-admin/?page=nfd-onboarding&flow=ecommerce#/wp-setup/step/design/theme-styles/menu'
 		);
-		cy.wait( 5000 );
+		cy.wait( 40000 );
 	} );
+
+	it( 'Continue Onboarding', () => {
+		cy.get( '.components-modal__content', { timeout: 40000 } ).should(
+			'be.visible'
+		);
+		cy.contains( 'button', 'Continue' ).click();
+		cy.wait(5000);
+	})
 
 	it( 'Check Drawer Activity', () => {
 		DrawerActivityForMenu(
