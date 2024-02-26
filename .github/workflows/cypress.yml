@@ -1,6 +1,9 @@
 name: Cypress Tests
 
 on:
+  schedule:
+    # Runs "Everyday at 7am UTC"
+    - cron: '0 7 * * *'
   push:
     branches:
       - main
